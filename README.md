@@ -1,12 +1,55 @@
-# Forter Chat Bot
+## Forter Chat Bot
 
-Hi there! :)
+# Hi there! :)
 
-
-Your challenge is to build a very simple chat bot web app.
-
-In this repository, you will find working server and client skeletons.
-
+This is a little chat room with a bot that answers previously asked questions by indexing all questions to elasticsearch then analyzing incoming messages.
 The full challenge description can be found [here](https://docs.google.com/document/d/1g9d3-i1bCUSCMYMcodb_YKX6J8K2QmeVT4S4qUyeZH8/edit?usp=sharing)
 
-Good Luck!
+It is based on the following tech stack:
+* [dojo-starter](https://github.com/lirown/dojo-starter) repository.
+* [lit](https://lit.dev/) - A simple library for building fast, lightweight web components.
+* [Node.js](https://nodejs.org/) - A JavaScript runtime.
+* [express](https://expressjs.com/) - Fast, unopinionated, minimalist web framework for Node.js.
+* [socket.io](https://socket.io/) - A library for real-time, bidirectional and event-based communication between the browser and the server.
+* [elasticsearch](https://www.elastic.co/elasticsearch/) - A distributed, RESTful search and analytics engine.
+  * [elasticsearch-js](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/index.html) - The official Elasticsearch client for Node.js.
+  * [docker.elastic.co/elasticsearch/elasticsearch:8.6.1](https://www.docker.elastic.co/r/elasticsearch/elasticsearch) - The official Elasticsearch Docker image.
+
+## Getting started
+
+1. Clone the repository.
+2. Install elastic search locally:
+   1. Create docker network:
+      ```bash
+      docker network create elastic
+      ``` 
+   2. Pull the image:
+      ```bash
+      docker pull docker.elastic.co/elasticsearch/elasticsearch:8.6.1
+      ```
+   3. Run the container without authentication: 
+      ```bash
+      docker run --name elasticsearch --net elastic -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node"  -e "xpack.security.enabled=false" -t docker.elastic.co/elasticsearch/elasticsearch:8.6.1
+      ```
+3. Install the dependencies both on the server and client.
+   1. Under the root folder, simply run:
+      ```bash
+      cd client 
+      npm install
+      ```
+   2. Then,
+      ```bash
+      cd server
+      npm install
+      ```
+4. Start the development server.
+   1. This command serves the app at `http://localhost:8000`:
+      ```bash
+      npm run serve
+      ```
+   2. The command will also start the express server at `http://localhost:8001`
+   3. You can run the only server manually by using this command on the "server" directory
+      ```bash
+      npm run start:dev
+      ```
+5. Profit!
