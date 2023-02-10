@@ -53,3 +53,7 @@ It is based on the following tech stack:
       npm run start:dev
       ```
 5. Profit!
+
+
+## Some notes
+1. For each of access to elastic search, you can use the highly convenient chrome extension [Elasticsearch Head](https://chrome.google.com/webstore/detail/multi-elasticsearch-head/cpmmilfkofbeimbmgiclohpodggeheim).
