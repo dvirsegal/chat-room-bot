@@ -1,6 +1,6 @@
 import {html, LitElement} from "lit";
 import {connect as connectSocket, registerToSocket} from '../socket/socket';
-import {UsersList} from "../components/userList.js";
+import {UsersList} from "../components/usersList.js";
 import {ChatRoom} from "../components/chatRoom.js";
 
 import confetti from 'canvas-confetti';
