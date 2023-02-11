@@ -23,7 +23,6 @@ export class UsersList extends LitElement {
 
     connectedCallback() {
         super.connectedCallback();
-
         UNSUBSCRIBERS.push(
             registerToSocket(
                 'onlineUsers',
@@ -34,8 +33,7 @@ export class UsersList extends LitElement {
 
     disconnectedCallback() {
         super.disconnectedCallback();
-
-        UNSUBSCRIBERS.map((cb) => cb());
+        UNSUBSCRIBERS.forEach(cb => cb());
     }
 
     render() {
@@ -43,7 +41,7 @@ export class UsersList extends LitElement {
             ? html`
                     <div class="title">Online Users:</div>
                     ${this.onlineUsers?.map(
-                            (user) => html`
+                            user => html`
                                 <div class="user">
                                     <span class="status-indicator"></span>
                                     ${user}
@@ -53,6 +51,6 @@ export class UsersList extends LitElement {
                                 </div>`
                     )}`
             : html`
-                    <div>Please login to see connected users!</div>`;
+                    <div>To see who's connected, please log in!</div>`;
     }
 }
