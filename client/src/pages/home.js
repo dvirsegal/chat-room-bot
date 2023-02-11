@@ -5,24 +5,33 @@ import {ChatRoom} from "../components/chatRoom.js";
 
 import confetti from 'canvas-confetti';
 
+const USERNAME_TAKEN_MESSAGE = userName =>
+    `Username ${userName} is already taken! Please choose another one.`;
+const USERNAME_REQUIRED_MESSAGE = 'Username was not entered!';
+const USERNAME_RESTRICTED_MESSAGE = 'Please choose another username..';
+const AUDIO_FX_FILE = "src/assets/sound/welcome.mp3";
+const LOGO_IMAGE_FILE = "/src/assets/images/logo.png";
+
 
 export class PageHome extends LitElement {
 
     constructor() {
         super();
-
         this.username = null;
-
-        registerToSocket('usernameTaken', (userName) => {
-            alert(`Username ${userName} is already taken! Please choose another one.`);
-            window.location.reload();
-        })
+        this.registerUsernameTakenHandler();
     }
 
     static get properties() {
         return {
             username: {type: String}
         };
+    }
+
+    registerUsernameTakenHandler() {
+        registerToSocket('usernameTaken', (userName) => {
+            alert(USERNAME_TAKEN_MESSAGE(userName));
+            window.location.reload();
+        });
     }
 
     createRenderRoot() {
@@ -37,16 +46,16 @@ export class PageHome extends LitElement {
                             <div class="login-overlay">
                                 <div class="login-container">
                                     <div class="title">
-                                        <img src="/src/assets/images/logo.png" class="logo" alt="site logo"/>
+                                        <img src="${LOGO_IMAGE_FILE}" class="logo" alt="site logo"/>
                                         Welcome to Chit Chat App!<br/>
                                         Please Enter your username to start chatting:
                                     </div>
-                                    <form @submit=${this._loginUser}>
+                                    <form @submit=${this.#loginUser}>
                                         <input class="ca-input" type="text" id="username"/>
                                         <button
                                                 class="ca-button"
                                                 type="button"
-                                                @click=${this._loginUser}
+                                                @click=${this.#loginUser}
                                         >
                                             Login
                                         </button>
@@ -59,28 +68,46 @@ export class PageHome extends LitElement {
             </div>`;
     }
 
-    _loginUser(e) {
-        e.preventDefault();
+
+    /**
+     * Login user to the chat room
+     * @param event {Event}
+     */
+    #loginUser = event => {
+        event.preventDefault();
 
         const username = document.getElementById('username').value.trim();
 
         if (!username) {
-            alert('Username was not entered!');
+            alert(USERNAME_REQUIRED_MESSAGE);
             return;
         }
 
         if (username.toLowerCase() === 'bot') {
-            alert('Please choose another username..');
+            alert(USERNAME_RESTRICTED_MESSAGE);
             return;
         }
 
         this.username = username;
         connectSocket(username);
+        this.#playAudioFX(AUDIO_FX_FILE);
+        this.#dispenseConfetti();
+    };
 
-        new AudioFX("src/assets/sound/welcome.mp3", function () {
+    /**
+     * Play audio file using AudioFX library
+     * @param audioFile
+     */
+    #playAudioFX(audioFile) {
+        new AudioFX(audioFile, function () {
             this.play();
         });
-        
+    }
+
+    /**
+     * Dispense confetti using canvas-confetti library
+     */
+    #dispenseConfetti() {
         confetti({
             spread: 360,
             ticks: 200,
