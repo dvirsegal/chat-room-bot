@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.sendFile(__dirname + '/index.html');
 });
 
 const http = httpServer.createServer(app);
