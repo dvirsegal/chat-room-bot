@@ -60,9 +60,7 @@ It is based on the following tech stack:
        ```
 5. Profit!
 
-
 https://user-images.githubusercontent.com/15158978/218278641-1180331d-1f22-412c-a293-8a6fbfd70c42.mp4
-
 
 ## Testing
 
@@ -88,3 +86,4 @@ npm run test
 6. The avatars rely on 2 different APIs:
     1. [DiceBear](https://dicebear.com/) - A free API for generating unique avatar images.
     2. [Boring Avatars](https://boringavatars.com/) - A free API for generating unique "boring" avatar images.
+7. The bot has peculiar humor, it likes dad jokes. Just ask him "bot tell me a joke" and you'll see...
