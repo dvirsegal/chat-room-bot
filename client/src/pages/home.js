@@ -47,8 +47,8 @@ export class PageHome extends LitElement {
                                 <div class="login-container">
                                     <div class="title">
                                         <img src="${LOGO_IMAGE_FILE}" class="logo" alt="site logo"/>
-                                        Welcome to Chit Chat App!<br/>
-                                        Please Enter your username to start chatting:
+                                        Welcome to Chit Chat!<br/>
+                                        Please enter your username to start chatting:
                                     </div>
                                     <form @submit=${this.#loginUser}>
                                         <input class="ca-input" type="text" id="username"/>
