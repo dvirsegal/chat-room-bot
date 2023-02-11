@@ -76,8 +76,6 @@ function initSocketServer(httpServer) {
         } catch (error) {
             console.error("Got error in socket server: ", error);
             throw error;
-        } finally {
-            socket.disconnect(true);
         }
     });
 }
