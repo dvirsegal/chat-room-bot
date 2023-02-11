@@ -87,3 +87,7 @@ npm run test
     1. [DiceBear](https://dicebear.com/) - A free API for generating unique avatar images.
     2. [Boring Avatars](https://boringavatars.com/) - A free API for generating unique "boring" avatar images.
 7. The bot has peculiar humor, it likes dad jokes. Just ask him "bot tell me a joke" and you'll see...
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/15158978/218278924-e642b2f3-7cde-405e-b25a-a3da84c7c55d.gif">
+</p>
