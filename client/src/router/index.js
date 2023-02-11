@@ -16,7 +16,9 @@ router.setRoutes([
         }
     },
     ...routes
-]);
+]).then(r => {
+    console.debug('router redirected without trailing slash', r);
+});
 
 /**
  * setup router from specific route config
