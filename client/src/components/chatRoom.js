@@ -55,7 +55,6 @@ export class ChatRoom extends LitElement {
         REGISTERED.push(
             registerToSocket('request_avatar_response',
                 ([{avatars}]) => {
-                    console.log('avatars', avatars)
                     this.avatars = avatars
                 })
         );
