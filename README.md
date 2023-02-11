@@ -60,9 +60,17 @@ It is based on the following tech stack:
        ```
 5. Profit!
 
+## Testing
+
+To run the server side tests, simply run from the "server" directory:
+
+```bash
+npm run test
+```
+
 ## Some notes
 
-1. For each of access to elastic search, you can use the highly convenient chrome
+1. For each of access to elastic search, you can use the highly convenient Chrome
    extension [Elasticsearch Head](https://chrome.google.com/webstore/detail/multi-elasticsearch-head/cpmmilfkofbeimbmgiclohpodggeheim).
 2. The app logo was generated using DALL-E 2.0, a neural network trained on 400 million image pairs from the internet.
    You can read more about it [here](https://openai.com/blog/dall-e/).
@@ -71,4 +79,8 @@ It is based on the following tech stack:
    it [here](https://www.mdpi.com/0718-1876/17/1/11).
 4. The bot's answers were generated using ChatGPT, a large-scale generative pre-trained language model. You can read
    more about it [here](https://chat.openai.com/chat).
-5. The robot's voice was generated using [UberDuck](https://app.uberduck.ai) learnt from Jerry Seinfeld's voice.
+5. The robot's welcoming voice was generated using [UberDuck](https://app.uberduck.ai) learnt from Jerry Seinfeld's
+   voice.
+6. The avatars rely on 2 different APIs:
+    1. [DiceBear](https://dicebear.com/) - A free API for generating unique avatar images.
+    2. [Boring Avatars](https://boringavatars.com/) - A free API for generating unique "boring" avatar images.
