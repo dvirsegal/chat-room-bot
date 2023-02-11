@@ -1,5 +1,4 @@
-import {html} from "lit";
-import {PageElement} from '../assets/styles/pageElement.js';
+import {html, LitElement} from "lit";
 import {connect as connectSocket, registerToSocket} from '../socket/socket';
 import {UsersList} from "../components/userList.js";
 import {ChatRoom} from "../components/chatRoom.js";
@@ -7,7 +6,8 @@ import {ChatRoom} from "../components/chatRoom.js";
 import confetti from 'canvas-confetti';
 
 
-export class PageHome extends PageElement {
+export class PageHome extends LitElement {
+
     constructor() {
         super();
 
@@ -23,6 +23,10 @@ export class PageHome extends PageElement {
         return {
             username: {type: String}
         };
+    }
+
+    createRenderRoot() {
+        return this;
     }
 
     render() {
