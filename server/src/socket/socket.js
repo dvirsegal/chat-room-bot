@@ -11,6 +11,8 @@ let io;
 
 const clients = {};
 const avatars = {};
+const botName = 'Bot';
+const botAvatar = `https://api.dicebear.com/5.x/bottts/svg?seed=Midnight?size=32`;
 
 /**
  * Initialize socket server
@@ -84,8 +86,8 @@ function initSocketServer(httpServer) {
                         const botMessage = friendlify(possibleAnswer.content);
                         const dateNow = new Date();
 
-                        await sendMessage("https://api.dicebear.com/5.x/bottts/svg?seed=Midnight?size=32", 'Bot', botMessage, dateNow);
-                        io.emit('message', 'Bot', botMessage, dateNow);
+                        await sendMessage(botAvatar, botName, botMessage, dateNow);
+                        io.emit('message', botName, botMessage, dateNow);
                     }
                 }
             });
