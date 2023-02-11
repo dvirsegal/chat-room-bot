@@ -16,6 +16,7 @@ export const chatRoom = css`
     height: calc(100vh - 80px);
     max-height: calc(100vh - 80px);
     box-sizing: border-box;
+    background-color: #36393F;
   }
 
   .message-container {
@@ -29,6 +30,7 @@ export const chatRoom = css`
     overflow-y: auto;
     overflow-x: hidden;
     box-sizing: border-box;
+    background-color: #36393F;
   }
 
   .message {
@@ -38,8 +40,8 @@ export const chatRoom = css`
     padding: 10px;
     display: flex;
     flex-direction: column;
-    background-color: var(--light-background);
-    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.15);
+    background-color: #42464B;
+    box-shadow: 0 4px 7px rgba(0, 0, 0, 0.5);
     animation: SlideRight 0.3s ease-out;
   }
 
@@ -48,7 +50,7 @@ export const chatRoom = css`
   }
 
   .message.me {
-    background-color: var(--primary);
+    background-color: #7289DA;
     color: white;
     align-self: flex-end;
     animation: SlideLeft 0.3s ease-out;
@@ -60,12 +62,12 @@ export const chatRoom = css`
     width: 20px;
     top: 0;
     left: -10px;
-    background-color: var(--light-background);
+    background-color: #42464B;
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 0);
   }
 
   .message.me .tail {
-    background-color: var(--primary);
+    background-color: #7289DA;
     clip-path: polygon(0 0, 100% 0, 0 100%, 0 0);
     left: auto;
     right: -10px;
@@ -77,7 +79,7 @@ export const chatRoom = css`
     right: 0;
     font-size: 12px;
     font-style: italic;
-    color: var(--borders-dark);
+    color: #b9bbbe;
     margin-top: -5px;
   }
 
@@ -88,20 +90,22 @@ export const chatRoom = css`
   .sender {
     font-size: 16px;
     font-weight: bold;
+    color: white;
   }
 
   .content {
     font-size: 14px;
+    color: white;
   }
 
   .send-message {
     width: 100%;
     display: flex;
     padding: 20px;
-    border-top: 1px solid var(--borders);
+    border-top: 1px solid #2f3136;
     box-sizing: border-box;
     height: 80px;
-    background-color: white;
+    background-color: #232629;
   }
 
   .send-message form {
@@ -110,13 +114,18 @@ export const chatRoom = css`
   }
 
   .ca-button {
+    background-color: #075E54;
     border-bottom-right-radius: 5px;
     border-top-right-radius: 5px;
+    color: #fff;
   }
 
   .ca-input {
+    background-color: #232629;
+    color: #fff;
     flex-grow: 1;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
   }
+
 `;
