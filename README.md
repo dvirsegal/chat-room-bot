@@ -60,6 +60,10 @@ It is based on the following tech stack:
        ```
 5. Profit!
 
+
+https://user-images.githubusercontent.com/15158978/218278641-1180331d-1f22-412c-a293-8a6fbfd70c42.mp4
+
+
 ## Testing
 
 To run the server side tests, simply run from the "server" directory:
