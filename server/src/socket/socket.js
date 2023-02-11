@@ -5,6 +5,8 @@ const {
 } = require('../db/elasticsearch');
 const {Server} = require('socket.io');
 const {friendlify} = require('../bot/attitude');
+const DadJokes = require('dadjokes-wrapper');
+
 
 /**@type {Server} */
 let io;
@@ -81,7 +83,7 @@ function initSocketServer(httpServer) {
                 // If message is a question, try to get an answer from Bot with attitude
                 if (content?.includes('?')) {
                     const possibleAnswer = await getAnswerForQuestion(content);
-                    
+
                     if (!avatars[botName]) {
                         avatars[botName] = botAvatar;
                     }
@@ -94,6 +96,23 @@ function initSocketServer(httpServer) {
                         await sendMessage(botAvatar, botName, botMessage, dateNow);
                         io.emit('message', botName, botMessage, dateNow);
                     }
+                }
+
+                if (content?.includes('bot tell me a joke')) {
+                    const dj = new DadJokes();
+                    dj.randomJoke()
+                        .then(async botMessage => {
+
+                            if (!avatars[botName]) {
+                                avatars[botName] = botAvatar;
+                            }
+                            io.emit('request_avatar_response', {avatars: avatars});
+                            const dateNow = new Date();
+                            await sendMessage(botAvatar, botName, botMessage, dateNow);
+                            io.emit('message', botName, botMessage, dateNow);
+                        })
+                        .catch(err => console.error(err));
+
                 }
             });
         } catch (error) {
