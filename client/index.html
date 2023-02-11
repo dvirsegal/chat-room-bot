@@ -1,13 +1,64 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="ie=edge" http-equiv="X-UA-Compatible"/>
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Chat Bot</title>
-    <script type="module" src="index.js"></script>
+    <title>ChatApp</title>
 
-  </head>
-  <body>
-    <demo-element></demo-element>
-  </body>
+    <base href="/"/>
+    <script type="text/javascript">
+        // Single Page Apps for GitHub Pages
+        // MIT License
+        // https://github.com/rafgraph/spa-github-pages
+        // This script checks to see if a redirect is present in the query string,
+        // converts it back into the correct url and adds it to the
+        // browser's history using window.history.replaceState(...),
+        // which won't cause the browser to attempt to load the new url.
+        // When the single page app is loaded further down in this file,
+        // the correct url will be waiting in the browser's history for
+        // the single page app to route accordingly.
+        const [, base = '', preview = ''] = location.pathname.split('/');
+
+        if (preview.includes('deploy-preview')) {
+            document
+                .querySelector('base')
+                .setAttribute('href', `/${base}/${preview}/`);
+        } else if (location.href.includes('github.io')) {
+            document.querySelector('base').setAttribute('href', `/${base}/`);
+        }
+    </script>
+    <script crossorigin="anonymous"
+            integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+"
+            src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
+
+    <link href="./src/assets/images/favicon.svg" rel="icon"/>
+
+    <link
+            as="style"
+            href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;900&display=swap"
+            rel="preload"
+    />
+
+    <link
+            href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;900&display=swap"
+            media="print"
+            onload="this.media='all'"
+            rel="stylesheet"
+    />
+
+    <link as="style" href="index.css" rel="preload"/>
+
+    <link href="index.css" onload="this.media='all'" rel="stylesheet"/>
+    <script src="//cdn.jsdelivr.net/audiofx/latest/AudioFX.min.js"></script>
+    <script src="index.js" type="module"></script>
+</head>
+
+<body>
+
+<app-index></app-index>
+</body>
 </html>
