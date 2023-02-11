@@ -10,6 +10,7 @@ const {friendlify} = require('../bot/attitude');
 let io;
 
 const clients = {};
+const avatars = {};
 
 /**
  * Initialize socket server
@@ -36,6 +37,19 @@ function initSocketServer(httpServer) {
                 socket.emit('usernameTaken', username);
             }
 
+            const avatarsNames = [
+                "beam",
+                "marble",
+                "pixel",
+                "ring",
+                "sunset",
+                "bauhaus"
+            ];
+            avatars[username] = ["https://source.boringavatars.com/",
+                avatarsNames[Math.floor(Math.random() * avatarsNames.length)], "/15", "/" + username].join('');
+            io.emit('request_avatar_response', {avatars: avatars});
+
+
             clients[socket.id] = username;
             console.log(
                 `User ${username} has joined! Users: ${Object.values(clients)}`
@@ -50,6 +64,8 @@ function initSocketServer(httpServer) {
 
                 delete clients[socket.id];
 
+                delete avatars[user];
+
                 console.log(
                     `User ${user} disconnected. Users: ${Object.values(clients)}`
                 );
@@ -58,7 +74,7 @@ function initSocketServer(httpServer) {
 
             socket.on('message', async (content, timestamp) => {
                 io.emit('message', clients[socket.id], content, timestamp);
-                await sendMessage(clients[socket.id], content, timestamp);
+                await sendMessage(avatars[clients[socket.id]], clients[socket.id], content, timestamp);
 
                 // If message is a question, try to get an answer from Bot with attitude
                 if (content?.includes('?')) {
@@ -68,7 +84,7 @@ function initSocketServer(httpServer) {
                         const botMessage = friendlify(possibleAnswer.content);
                         const dateNow = new Date();
 
-                        await sendMessage('Bot', botMessage, dateNow);
+                        await sendMessage("https://api.dicebear.com/5.x/bottts/svg?seed=Midnight?size=32", 'Bot', botMessage, dateNow);
                         io.emit('message', 'Bot', botMessage, dateNow);
                     }
                 }

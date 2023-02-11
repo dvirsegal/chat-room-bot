@@ -59,15 +59,17 @@ async function loadChatHistory() {
 /**
  * Sends message to the chat-history index
  *
+ * @param {String} avatar
  * @param {String} sender
  * @param {String} content
  * @param {Date} timestamp
  */
-async function sendMessage(sender, content, timestamp) {
+async function sendMessage(avatar, sender, content, timestamp) {
     try {
         await client.index({
             index: 'chat-history',
             body: {
+                avatar,
                 sender,
                 content,
                 timestamp

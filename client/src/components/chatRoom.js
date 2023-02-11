@@ -12,12 +12,14 @@ export class ChatRoom extends LitElement {
         super();
         this.messages = null;
         this.currentUser = null;
+        this.avatars = null;
     }
 
     static get properties() {
         return {
             messages: {type: Array},
-            currentUser: {type: String}
+            currentUser: {type: String},
+            avatars: {type: Map},
         };
     }
 
@@ -49,6 +51,14 @@ export class ChatRoom extends LitElement {
         REGISTERED.push(
             registerToSocket('getHistory', ([{messages}]) => this.#getHistory(messages))
         );
+
+        REGISTERED.push(
+            registerToSocket('request_avatar_response',
+                ([{avatars}]) => {
+                    console.log('avatars', avatars)
+                    this.avatars = avatars
+                })
+        );
     }
 
     updated(changedProperties) {
@@ -70,11 +80,10 @@ export class ChatRoom extends LitElement {
                             <div class="loader"></div>`
                 : html`
                             <div class="message-container" id="message-container">
-                                ${this.messages.map(({sender, timestamp, content}, index) => {
+                                ${this.messages.map(({avatar, sender, timestamp, content}, index) => {
                                     const isFirstInBundle =
                                             index === 0 || this.messages[index - 1].sender !== sender;
                                     const isMe = sender === this.currentUser;
-
                                     return html`
                                         <div
                                                 class=${`message ${isMe ? 'me' : ''} ${
@@ -90,6 +99,8 @@ export class ChatRoom extends LitElement {
                                                                 class="sender"
                                                                 style=${isMe ? '' : `color: ${USER_COLORS[sender]}`}
                                                         >
+                                                            <img class="avatar" src=${avatar || this.avatars[sender]}
+                                                                 width="15px" height="15px" alt="avatar icon"/>
                                                             ${sender}:
                                                         </div>`
                                                     : ''}
@@ -157,7 +168,9 @@ export class ChatRoom extends LitElement {
      * @param timestamp
      */
     #handleMessage(sender, content, timestamp) {
-        if (!USER_COLORS[sender]) USER_COLORS[sender] = this.#getRandomColor();
+        if (!USER_COLORS[sender]) {
+            USER_COLORS[sender] = this.#getRandomColor();
+        }
 
         this.messages = [
             ...(this.messages || []),
