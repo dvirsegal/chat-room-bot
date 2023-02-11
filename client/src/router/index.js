@@ -7,7 +7,6 @@ const router = new Router();
 window.__router = router;
 
 router.setRoutes([
-    // Redirect to URL without trailing slash
     {
         path: '(.*)/',
         action: (context, commands) => {
