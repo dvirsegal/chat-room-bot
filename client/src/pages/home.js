@@ -80,29 +80,17 @@ export class PageHome extends LitElement {
         new AudioFX("src/assets/sound/welcome.mp3", function () {
             this.play();
         });
-
-        const defaults = {
-            spread: 360,
-            ticks: 50,
-            gravity: 0,
-            decay: 0.94,
-            startVelocity: 30,
-            shapes: ['star'],
-            colors: ['FFE400', 'FFBD00', 'E89400', 'FFCA6C', 'FDFFB8']
-        };
-
+        
         confetti({
-            ...defaults,
+            spread: 360,
+            ticks: 200,
+            gravity: 1,
+            decay: 0.98,
+            startVelocity: 25,
+            colors: ['FFE400', 'FFBD00', 'E89400', 'FFCA6C', 'FDFFB8'],
             particleCount: 40,
             scalar: 1.2,
             shapes: ['star']
-        });
-
-        confetti({
-            ...defaults,
-            particleCount: 10,
-            scalar: 0.75,
-            shapes: ['circle']
         });
     }
 }
