@@ -4,7 +4,7 @@ import {registerToSocket, sendMessage} from '../socket/socket';
 import {inputStyles, loader, slideLeftAnimation, slideRightAnimation} from '../assets/styles/generalStyles.js';
 import {chatRoom} from "../assets/styles/chatRoom.js";
 
-const UNSUBSCRIBERS = [];
+const REGISTERED = [];
 const USER_COLORS = {};
 
 export class ChatRoom extends LitElement {
@@ -39,50 +39,26 @@ export class ChatRoom extends LitElement {
         return this.shadowRoot.querySelector('.message:last-child');
     }
 
+
     connectedCallback() {
         super.connectedCallback();
-        UNSUBSCRIBERS.push(
-            registerToSocket('message', ([sender, content, timestamp]) => {
-                if (!USER_COLORS[sender]) USER_COLORS[sender] = this._getRandomColor();
+        REGISTERED.push(
+            registerToSocket('message', ([sender, content, timestamp]) =>
+                this.#handleMessage(sender, content, timestamp)));
 
-                this.messages = [
-                    ...(this.messages || []),
-                    {sender, content, timestamp}
-                ];
-
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    new Notification('New message arrived!', {
-                        body: `${sender}: ${content}`,
-                        icon: '/src/assets/images/logo.png',
-                        timestamp
-                    });
-                }
-            })
-        );
-
-        UNSUBSCRIBERS.push(
-            registerToSocket('getHistory', ([{messages}]) => {
-                const uniqueSenders = this._getUniqueSenders(messages);
-
-                // Initialize the user colors
-                uniqueSenders.map(
-                    (sender) => (USER_COLORS[sender] = this._getRandomColor())
-                );
-
-                // Initialize the messages
-                this.messages = [...(this.messages || []), ...messages];
-            })
+        REGISTERED.push(
+            registerToSocket('getHistory', ([{messages}]) => this.#getHistory(messages))
         );
     }
 
-    updated(_changedProperties) {
-        super.updated(_changedProperties);
+    updated(changedProperties) {
+        super.updated(changedProperties);
         this.latestMessage?.scrollIntoView();
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        UNSUBSCRIBERS.map((cb) => cb());
+        REGISTERED.forEach((cb) => cb());
     }
 
     render() {
@@ -122,15 +98,15 @@ export class ChatRoom extends LitElement {
                                 })}
                             </div>
                             <div class="send-message">
-                                <form @submit=${this._sendMessage}>
+                                <form @submit=${this.#sendMessage}>
                                     <input
                                             class="ca-input"
                                             type="text"
                                             placeholder="Enter your message here.."
                                             id="message"
                                     />
-                                    <button @mouseover=${this._hoverIn} @mouseout=${this._hoverOut}
-                                            @click=${this._sendMessage} class="ca-button">
+                                    <button @mouseover=${this.#hoverIn} @mouseout=${this.#hoverOut}
+                                            @click=${this.#sendMessage} class="ca-button">
                                         Send
                                     </button>
                                 </form>
@@ -140,13 +116,14 @@ export class ChatRoom extends LitElement {
                 `;
     }
 
-    _hoverIn(e) {
+
+    #hoverIn(e) {
         if (e.type === 'mouseover') {
             e.target.style.backgroundColor = 'RoyalBlue';
         }
     }
 
-    _hoverOut(e) {
+    #hoverOut(e) {
         if (e.type === 'mouseout') {
             e.target.style.backgroundColor = '#075E54';
         }
@@ -157,13 +134,13 @@ export class ChatRoom extends LitElement {
      *
      * @returns {String} hsl css color string with a random hue, constant saturation of 100 and random lightness
      */
-    _getRandomColor() {
+    #getRandomColor() {
         return `hsl(${Math.round(Math.random() * 360)}, 100%, ${Math.round(
             Math.random() * (45 - 25) + 25
         )}%)`;
     }
 
-    _getUniqueSenders(messages) {
+    #getUniqueSenders(messages) {
         const unique = [];
 
         messages?.map(
@@ -174,12 +151,49 @@ export class ChatRoom extends LitElement {
     }
 
     /**
-     *
-     * @param {Event} e
-     * @returns
+     * Handle incoming messages
+     * @param sender
+     * @param content
+     * @param timestamp
      */
-    _sendMessage(e) {
-        e.preventDefault();
+    #handleMessage(sender, content, timestamp) {
+        if (!USER_COLORS[sender]) USER_COLORS[sender] = this.#getRandomColor();
+
+        this.messages = [
+            ...(this.messages || []),
+            {sender, content, timestamp}
+        ];
+
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('New message arrived!', {
+                body: `${sender}: ${content}`,
+                icon: '/src/assets/images/logo.png',
+                timestamp
+            });
+        }
+    }
+
+    /**
+     * Get the message history
+     * @param messages
+     */
+    #getHistory(messages) {
+        const uniqueSenders = this.#getUniqueSenders(messages);
+
+        uniqueSenders.map(
+            (sender) => (USER_COLORS[sender] = this.#getRandomColor())
+        );
+
+        this.messages = [...(this.messages || []), ...messages];
+    }
+
+
+    /**
+     * Send a message
+     * @param event
+     */
+    #sendMessage(event) {
+        event.preventDefault();
         const messageContent = this.usernameInput.value.trim();
 
         if (!messageContent) {
