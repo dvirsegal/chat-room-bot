@@ -1,30 +1,23 @@
-import express from 'express';
-import httpServer from 'http';
-import { Server } from 'socket.io';
-import cors from 'cors';
+require('dotenv').config();
+const express = require('express');
+const httpServer = require('http');
+const cors = require('cors');
+const {initElasticSearchClient} = require('./db/elasticsearch');
+const {initSocketServer} = require('./socket/socket');
 
 const app = express();
-
+const port = process.env.PORT || 3000;
 app.use(cors());
-const http =  httpServer.createServer(app);
-
-http.listen(3000, () => {
-    console.log('listening on *:3000');
-});
-
-const io = new Server(http, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"],
-        credentials: true
-    }
-});
 
 app.get('/', (req, res) => {
     res.send('Hello World!')
 });
 
-io.on('connection', (socket) => {
-    console.log('new connection');
-    io.emit('new connection', 'new connection');
+const http = httpServer.createServer(app);
+
+initElasticSearchClient();
+initSocketServer(http);
+
+http.listen(port, () => {
+    console.log('listening on port: ' + port);
 });
