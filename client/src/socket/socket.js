@@ -1,7 +1,6 @@
 import config from '../config';
 
-let socket;
-let events = {};
+let socket, events = {};
 
 export function connect(user) {
     socket = io(
@@ -27,20 +26,20 @@ export function connect(user) {
  * @returns {Function} unsubscribe function
  */
 export function registerToSocket(event, callback) {
-    if (!events[event]) events[event] = [];
+    if (!events[event]) {
+        events[event] = [];
+    }
 
     events[event].push(callback);
 
-    // create an "unsubscribe" function
     return () => {
-        events[event]?.splice(
-            events[event].findIndex((cb) => cb === callback),
+        events[event].splice(
+            events[event].indexOf(callback),
             1
         );
     };
 }
 
 export function sendMessage(message) {
-    console.log('socket: ', socket);
     socket.emit('message', message, new Date());
 }
