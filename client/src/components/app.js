@@ -4,12 +4,17 @@ import Header from './header.js';
 import {attachRouter} from '../router/index.js';
 
 export class App extends LitElement {
+    static permission = 'granted';
+
     connectedCallback() {
         super.connectedCallback();
+        this.#checkNotificationPermission();
+    }
 
+    #checkNotificationPermission() {
         if ('Notification' in window) {
             const currentPermission = Notification.permission;
-            if (currentPermission !== 'granted') {
+            if (currentPermission !== App.permission) {
                 Notification.requestPermission()
                     .then(permission => console.log(`Notification permission: ${permission}`));
             }
