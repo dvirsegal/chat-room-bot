@@ -2,7 +2,7 @@ import {html, LitElement} from "lit";
 import {registerToSocket} from '../socket/socket';
 import {usersList} from "../assets/styles/usersList.js";
 
-const UNSUBSCRIBERS = [];
+const REGISTERED = [];
 
 export class UsersList extends LitElement {
 
@@ -23,7 +23,7 @@ export class UsersList extends LitElement {
 
     connectedCallback() {
         super.connectedCallback();
-        UNSUBSCRIBERS.push(
+        REGISTERED.push(
             registerToSocket(
                 'onlineUsers',
                 ([{users}]) => (this.onlineUsers = users)
@@ -33,7 +33,7 @@ export class UsersList extends LitElement {
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        UNSUBSCRIBERS.forEach(cb => cb());
+        REGISTERED.forEach(cb => cb());
     }
 
     render() {
