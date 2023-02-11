@@ -1,5 +1,5 @@
 import {html, LitElement} from 'lit';
-import {Header} from './header.js';
+import Header from './header.js';
 
 import {attachRouter} from '../router/index.js';
 
