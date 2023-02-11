@@ -81,6 +81,11 @@ function initSocketServer(httpServer) {
                 // If message is a question, try to get an answer from Bot with attitude
                 if (content?.includes('?')) {
                     const possibleAnswer = await getAnswerForQuestion(content);
+                    
+                    if (!avatars[botName]) {
+                        avatars[botName] = botAvatar;
+                    }
+                    io.emit('request_avatar_response', {avatars: avatars});
 
                     if (possibleAnswer) {
                         const botMessage = friendlify(possibleAnswer.content);
