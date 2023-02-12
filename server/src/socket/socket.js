@@ -8,17 +8,25 @@ const {friendlify} = require('../bot/attitude');
 const DadJokes = require('dadjokes-wrapper');
 
 
-/**@type {Server} */
-let io;
+const avatarsNames = [
+    "beam",
+    "marble",
+    "pixel",
+    "ring",
+    "sunset",
+    "bauhaus"
+];
 
 const clients = {};
 const avatars = {};
 const botName = 'Bot';
 const botAvatar = `https://api.dicebear.com/5.x/bottts/svg?seed=Midnight?size=32`;
 
+/**@type {Server} */
+let io;
+
 /**
  * Initialize socket server
- * Exception is thrown if user tries to connect without username
  * @param httpServer
  */
 function initSocketServer(httpServer) {
@@ -29,97 +37,136 @@ function initSocketServer(httpServer) {
         }
     });
 
-    io.on('connection', async (socket) => {
-        try {
-            const {username} = socket.handshake.query;
+    io.on('connection', onConnection);
+}
 
-            if (!username) {
-                console.log('User tried to connect without username');
-            }
+/**
+ * On connection event handler
+ * @param socket
+ * @returns {Promise<void>}
+ */
+async function onConnection(socket) {
+    try {
+        const {username} = socket.handshake.query;
 
-            if (Object.values(clients).includes(username)) {
-                socket.emit('usernameTaken', username);
-            }
-
-            const avatarsNames = [
-                "beam",
-                "marble",
-                "pixel",
-                "ring",
-                "sunset",
-                "bauhaus"
-            ];
-            avatars[username] = ["https://source.boringavatars.com/",
-                avatarsNames[Math.floor(Math.random() * avatarsNames.length)], "/15", "/" + username].join('');
-            io.emit('request_avatar_response', {avatars: avatars});
-
-
-            clients[socket.id] = username;
-            console.log(
-                `User ${username} has joined! Users: ${Object.values(clients)}`
-            );
-
-            const messages = await loadChatHistory();
-            socket.emit('getHistory', {messages});
-            io.emit('onlineUsers', {users: Object.values(clients)});
-
-            socket.on('disconnect', () => {
-                const user = clients[socket.id];
-
-                delete clients[socket.id];
-
-                delete avatars[user];
-
-                console.log(
-                    `User ${user} disconnected. Users: ${Object.values(clients)}`
-                );
-                io.emit('onlineUsers', {users: Object.values(clients)});
-            });
-
-            socket.on('message', async (content, timestamp) => {
-                io.emit('message', clients[socket.id], content, timestamp);
-                await sendMessage(avatars[clients[socket.id]], clients[socket.id], content, timestamp);
-
-                // If message is a question, try to get an answer from Bot with attitude
-                if (content?.includes('?')) {
-                    const possibleAnswer = await getAnswerForQuestion(content);
-
-                    if (!avatars[botName]) {
-                        avatars[botName] = botAvatar;
-                    }
-                    io.emit('request_avatar_response', {avatars: avatars});
-
-                    if (possibleAnswer) {
-                        const botMessage = friendlify(possibleAnswer.content);
-                        const dateNow = new Date();
-
-                        await sendMessage(botAvatar, botName, botMessage, dateNow);
-                        io.emit('message', botName, botMessage, dateNow);
-                    }
-                }
-
-                if (content?.includes('bot tell me a joke')) {
-                    const dj = new DadJokes();
-                    dj.randomJoke()
-                        .then(async botMessage => {
-
-                            if (!avatars[botName]) {
-                                avatars[botName] = botAvatar;
-                            }
-                            io.emit('request_avatar_response', {avatars: avatars});
-                            const dateNow = new Date();
-                            await sendMessage(botAvatar, botName, botMessage, dateNow);
-                            io.emit('message', botName, botMessage, dateNow);
-                        })
-                        .catch(err => console.error(err));
-
-                }
-            });
-        } catch (error) {
-            console.error("Got error in socket server: ", error);
-            throw error;
+        if (!username) {
+            console.error('User tried to connect without username');
         }
-    });
+
+        if (Object.values(clients).includes(username)) {
+            socket.emit('usernameTaken', username);
+        }
+
+        const avatarName =
+            avatarsNames[Math.floor(Math.random() * avatarsNames.length)];
+        avatars[username] = `https://source.boringavatars.com/${avatarName}/15/${username}`;
+
+        io.emit('request_avatar_response', {avatars: avatars});
+
+        clients[socket.id] = username;
+        console.log(`User ${username} has joined! Users: ${Object.values(clients)}`);
+
+        const messages = await loadChatHistory();
+        socket.emit('getHistory', {messages});
+        io.emit('onlineUsers', {users: Object.values(clients)});
+
+        socket.on('disconnect', () => onDisconnect(socket));
+
+
+        socket.on('message', (content, timestamp) =>
+            onMessage(socket, content, timestamp));
+    } catch (error) {
+        console.error('Got error in socket server: ', error);
+        throw error;
+    }
+}
+
+/**
+ * On disconnect
+ * @param socket
+ * @returns {Promise<void>}
+ */
+async function onDisconnect(socket) {
+    const user = clients[socket.id];
+
+    delete clients[socket.id];
+
+    console.log(`User ${user} disconnected. Users: ${Object.values(clients)}`);
+    io.emit('onlineUsers', {users: Object.values(clients)});
+}
+
+
+/**
+ * Send message to all users
+ * @param socket
+ * @param content
+ * @param timestamp
+ * @returns {Promise<void>}
+ */
+async function onMessage(socket, content, timestamp) {
+    io.emit('message', clients[socket.id], content, timestamp);
+    await sendMessage(avatars[clients[socket.id]], clients[socket.id], content, timestamp);
+
+    if (content?.includes('?')) {
+        await onQuestionMessage(content);
+    }
+
+    if (content?.includes('bot tell me a joke')) {
+        await onJokeMessage();
+    }
+}
+
+/**
+ * Send bot message with an answer to a question
+ * @param content
+ * @returns {Promise<void>}
+ */
+async function onQuestionMessage(content) {
+    const possibleAnswer = await getAnswerForQuestion(content);
+
+    if (!avatars[botName]) {
+        avatars[botName] = botAvatar;
+        io.emit('request_avatar_response', {avatars: avatars});
+    }
+
+    if (possibleAnswer) {
+        const botMessage = friendlify(possibleAnswer.content);
+        const dateNow = new Date();
+        await sendBotMessage(botMessage, dateNow);
+    }
+}
+
+/**
+ * Send bot message with a dad joke event handler
+ * @returns {Promise<void>}
+ */
+async function onJokeMessage() {
+    const dj = new DadJokes();
+
+    try {
+        const botMessage = await dj.randomJoke();
+        const dateNow = new Date();
+
+        if (!avatars[botName]) {
+            avatars[botName] = botAvatar;
+            io.emit('request_avatar_response', {avatars: avatars});
+        }
+
+        await sendBotMessage(botMessage, dateNow);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+/**
+ * Generic send bot message function
+ * @param content
+ * @param timestamp
+ * @returns {Promise<void>}
+ */
+async function sendBotMessage(content, timestamp) {
+    await sendMessage(botAvatar, botName, content, timestamp);
+    io.emit('message', botName, content, timestamp);
 }
 
 module.exports = {initSocketServer};
