@@ -146,6 +146,11 @@ async function getAnswerForQuestion(phrase) {
                                 }
                             },
                             {
+                                match: {
+                                    sender: 'Bot'
+                                }
+                            },
+                            {
                                 wildcard: {
                                     content: {
                                         value: '*\\?*'
