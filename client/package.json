@@ -2,7 +2,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "serve": "wds --watch"
+    "serve": "wds --watch",
+    "lint": "eslint ."
   },
   "keywords": [
     "web-components",
@@ -12,6 +13,7 @@
   ],
   "dependencies": {
     "@vaadin/router": "^1.7.4",
+    "audiofx": "^0.1.0",
     "canvas-confetti": "^1.6.0",
     "lit": "^2.2.4",
     "moment": "^2.29.4",
@@ -25,6 +27,7 @@
     "@web/dev-server": "^0.1.31",
     "@web/dev-server-legacy": "^1.0.0",
     "@webcomponents/webcomponentsjs": "^2.6.0",
+    "eslint": "^8.34.0",
     "lit-analyzer": "^1.2.1",
     "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
