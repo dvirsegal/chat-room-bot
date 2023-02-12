@@ -1,3 +1,5 @@
+// eslint-disable-line no-console
+
 const {Client} = require('@elastic/elasticsearch');
 jest.mock('@elastic/elasticsearch', () => ({
     Client: jest.fn(() => ({
