@@ -5,9 +5,9 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "npm run build && node build/index.js",
+    "start": "npm run build && node src/index.js",
     "build": "rimraf ./build",
-    "start:dev": "PORT=3000 nodemon build/index.js",
+    "start:dev": "PORT=3000 nodemon src/index.js",
     "lint": "eslint .",
     "test": "jest  --detectOpenHandles --forceExit --watchAll --maxWorkers=1"
   },
