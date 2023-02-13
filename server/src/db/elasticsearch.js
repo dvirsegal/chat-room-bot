@@ -93,6 +93,8 @@ async function getAnswerForQuestion(phrase) {
         const findMatchingQuestion = await client.search({
             index: 'chat-history',
             body: {
+                size: 1,
+                min_score: 2,
                 query: {
                     bool: {
                         should: [
